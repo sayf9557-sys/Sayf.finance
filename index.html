@@ -1,82 +1,31 @@
-
-
-
-<!DOCTYPE html>
-
-<html lang="ru">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Sayf.finance</title>
-
-<style>
-
-body{margin:0;background:#f4f7f6;font-family:Arial;color:#173d35}
-
-header{background:#145344;color:white;padding:24px;text-align:center}
-
-main{padding:18px;max-width:650px;margin:auto}
-
-.card{background:white;padding:20px;border-radius:15px;margin:12px 0;box-shadow:0 2px 8px #0001}
-
-h2{font-size:19px}
-
-button{background:#145344;color:white;border:0;border-radius:10px;padding:14px;margin:5px;font-size:15px}
-
-</style>
-
-</head>
-
-<body>
-
-<header>
-
-<h1>Sayf.finance</h1>
-
-<p>Торговля и исламская рассрочка</p>
-
-</header>
-
-<main>
-
-<h2>Панель управления</h2>
-
-<div class="card">Касса: 0 ₽</div>
-
-<div class="card">Общая задолженность: 0 ₽</div>
-
-<div class="card">Просроченные платежи: 0 ₽</div>
-
-<div class="card">Доход за месяц: 0 ₽</div>
-
-<h2>Разделы</h2>
-
-<div class="card">
-
-<button>Покупатели</button>
-
-<button>Продажи</button>
-
-<button>Рассрочка</button>
-
-<button>Инвесторы</button>
-
-<button>Платежи</button>
-
-<button>Расходы</button>
-
-<button>Отчёты</button>
-
-</div>
-
-<p>Без процентов, пеней и штрафов.</p>
-
-</main>
-
-</body>
-
-</html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sayf.finance</title><style>
+:root{font-family:system-ui,-apple-system,Arial;color:#183d34;background:#f3f7f5}*{box-sizing:border-box}body{margin:0}header{background:#125542;color:white;padding:18px 16px;display:flex;align-items:center;justify-content:space-between}h1{font-size:22px;margin:0}small{opacity:.8}main{max-width:1000px;margin:auto;padding:15px}nav{display:flex;gap:8px;overflow:auto;padding:12px 0}button{border:0;background:#14614b;color:white;border-radius:10px;padding:11px 14px;font-size:14px;cursor:pointer}nav button{white-space:nowrap;background:#e2eee9;color:#125542}nav button.active{background:#125542;color:white}.panel,.tile{background:white;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 12px #183d3410}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{margin:0}.tile strong{display:block;font-size:22px;margin-top:8px}.muted{color:#65776e;font-size:13px}input,select,textarea{width:100%;padding:12px;border:1px solid #cddbd5;border-radius:9px;font:inherit;background:white}label{display:block;font-size:13px;margin:10px 0 5px}form{display:grid;gap:4px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.hide{display:none!important}.item{border-bottom:1px solid #e4ece8;padding:12px 0}.item:last-child{border:0}.danger{color:#a73535}.success{color:#137a54}h2{font-size:19px}#message{padding:10px;border-radius:9px;margin:8px 0}#message:empty{display:none}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #e3ebe6;padding:10px;text-align:left;white-space:nowrap}th{color:#667970}button.secondary{background:#e2eee9;color:#125542}button:disabled{opacity:.45}#logout{background:#ffffff30}#auth{max-width:420px;margin:8vh auto}.empty{padding:25px;color:#74867c;text-align:center}@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}form.two{grid-template-columns:1fr 1fr}form.two button,form.two .full{grid-column:1/-1}}
+</style></head><body>
+<header><div><h1>Sayf.finance</h1><small>Торговля • исламская рассрочка</small></div><button id="logout" class="hide">Выйти</button></header>
+<main><div id="message"></div><section id="auth" class="panel"><h2>Вход для сотрудников</h2><form id="login"><label>Email</label><input id="email" type="email" required autocomplete="username"><label>Пароль</label><input id="password" type="password" required autocomplete="current-password"><button>Войти</button></form><p class="muted">Учётные записи создаются администратором в Supabase. Публичная регистрация отключена в интерфейсе.</p></section>
+<section id="app" class="hide"><div class="row"><span id="who" class="muted"></span><button class="secondary" id="refresh">Обновить</button></div><nav id="tabs"></nav><section id="dashboard"><div class="tiles" id="tiles"></div><div class="panel"><h2>Платежи с просрочкой</h2><div id="overdue"></div></div><div class="panel"><h2>Предстоящие платежи (30 дней)</h2><div id="upcoming"></div></div></section><section id="content" class="hide"></section></section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>
+const URL='https://dbbpsrsmxmtsixdxcuns.supabase.co',KEY='sb_publishable_tYl-KDB37gCB2QBwlBIyBA_E3Zo-3nh';
+const sb=window.supabase.createClient(URL,KEY);const $=id=>document.getElementById(id);let session=null,role='',data={},tab='dashboard';
+const sections={dashboard:'Главная',customers:'Покупатели',products:'Товары',sales:'Продажи',installments:'График',payments:'Платежи',investors:'Инвесторы',investor_transactions:'Вложения',expenses:'Расходы',reports:'Отчёт'};
+const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number(n||0))+' ₽';const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toLocaleDateString('en-CA');const month=()=>today().slice(0,7);const num=n=>Number(n||0);
+function msg(t,error=false){$('message').textContent=t;$('message').style.background=error?'#ffe9e9':'#dff3e8';$('message').style.color=error?'#9c2828':'#145542';}function clearMsg(){$('message').textContent=''}
+async function load(){clearMsg();const names=['customers','products','sales','installments','payments','investors','investor_transactions','expenses'];try{for(const name of names){const {data:rows,error}=await sb.from(name).select('*').limit(2000);if(error)throw error;data[name]=rows||[]}render()}catch(e){msg('Ошибка загрузки: '+e.message,true)}}
+function sum(a,key){return a.reduce((x,v)=>x+num(v[key]),0)}function nameOf(type,id){const r=(data[type]||[]).find(x=>x.id===id);return r?.full_name||r?.name||'—'}
+function paid(sale){return num(sale.initial_payment)+sum((data.payments||[]).filter(p=>p.sale_id===sale.id),'amount')}
+function remaining(sale){return Math.max(0,num(sale.fixed_total)-paid(sale))}
+function schedule(){return (data.installments||[]).map(i=>{const s=(data.sales||[]).find(s=>s.id===i.sale_id);if(!s)return {...i,remaining:num(i.amount)};const previous=(data.installments||[]).filter(x=>x.sale_id===i.sale_id&&(x.due_date<i.due_date||(x.due_date===i.due_date&&x.id<i.id))).reduce((v,x)=>v+num(x.amount),0);const applied=Math.max(0,paid(s)-num(s.initial_payment)-previous);return {...i,remaining:Math.max(0,num(i.amount)-applied),customer:nameOf('customers',s.customer_id)}})}
+function render(){const tabs=$('tabs');tabs.innerHTML=Object.entries(sections).map(([k,v])=>`<button data-tab="${k}" class="${tab===k?'active':''}">${v}</button>`).join('');tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});$('dashboard').classList.toggle('hide',tab!=='dashboard');$('content').classList.toggle('hide',tab==='dashboard');if(tab==='dashboard')dashboard();else if(tab==='reports')reports();else listing(tab)}
+function dashboard(){const debts=sum((data.sales||[]).filter(s=>s.sale_type==='installment').map(s=>({value:remaining(s)})),'value');const sched=schedule(),late=sched.filter(x=>x.due_date<today()&&x.remaining>0),future=sched.filter(x=>x.due_date>=today()&&x.due_date<=addDays(30)&&x.remaining>0);const monthly=sum((data.payments||[]).filter(x=>x.paid_at?.slice(0,7)===month()),'amount')+sum((data.sales||[]).filter(x=>x.sold_at?.slice(0,7)===month()),'initial_payment');const expenses=sum((data.expenses||[]).filter(x=>x.spent_at?.slice(0,7)===month()),'amount');const investments=sum((data.investor_transactions||[]).filter(x=>x.transaction_type==='contribution'),'amount')-sum((data.investor_transactions||[]).filter(x=>x.transaction_type==='return'),'amount');$('tiles').innerHTML=[['Долги покупателей',fmt(debts)],['Просрочено',fmt(sum(late,'remaining'))],['Поступления за месяц',fmt(monthly)],['Расходы за месяц',fmt(expenses)],['Вложения инвесторов (нетто)',fmt(investments)],['Предстоящие 30 дней',fmt(sum(future,'remaining'))]].map(x=>`<div class="tile"><div class="muted">${x[0]}</div><strong>${x[1]}</strong></div>`).join('');const row=x=>`<div class="item"><b>${esc(x.customer)}</b> — ${fmt(x.remaining)}<div class="muted">Срок: ${esc(x.due_date)}</div></div>`;$('overdue').innerHTML=late.map(row).join('')||'<div class="empty">Просроченных платежей нет</div>';$('upcoming').innerHTML=future.map(row).join('')||'<div class="empty">Нет предстоящих платежей</div>'}
+function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('en-CA')}
+const fields={customers:[['full_name','ФИО','text'],['phone','Телефон','tel'],['address','Адрес','text'],['notes','Примечание','text']],products:[['name','Товар','text'],['sku','Артикул','text'],['purchase_price','Закупочная цена','number'],['cash_price','Цена за наличные','number'],['stock_quantity','Количество','number']],investors:[['full_name','Инвестор','text'],['phone','Телефон','tel'],['notes','Примечание','text']],sales:[['customer_id','Покупатель','customers'],['product_id','Товар','products'],['quantity','Количество','number'],['sale_type','Тип продажи','sale_type'],['fixed_total','Фиксированная цена продажи','number'],['initial_payment','Первый взнос / оплата наличными','number'],['sold_at','Дата продажи','date']],installments:[['sale_id','Продажа','sales'],['due_date','Срок платежа','date'],['amount','Сумма по графику','number']],payments:[['sale_id','Продажа','sales'],['amount','Получено','number'],['paid_at','Дата и время','datetime-local'],['notes','Примечание','text']],investor_transactions:[['investor_id','Инвестор','investors'],['transaction_type','Операция','transaction_type'],['amount','Сумма','number'],['occurred_at','Дата','date'],['notes','Примечание','text']],expenses:[['description','Назначение расхода','text'],['amount','Сумма','number'],['spent_at','Дата','date']]};
+function options(type){if(type==='sale_type')return [['cash','Наличные'],['installment','Рассрочка']];if(type==='transaction_type')return [['contribution','Вложение'],['return','Возврат вложения'],['profit_distribution','Распределение прибыли']];return (data[type]||[]).map(x=>[x.id,type==='sales'?`${nameOf('customers',x.customer_id)} — ${fmt(x.fixed_total)} (${x.sold_at})`:x.full_name||x.name])}
+function listing(type){let f=fields[type];const canWrite=['owner','manager','cashier'].includes(role),investRestricted=['investors','investor_transactions'].includes(type)&&role==='cashier';const write=canWrite&&!investRestricted;const forms=f.map(([key,label,kind])=>{const opts=['customers','products','sales','investors','sale_type','transaction_type'].includes(kind);return `<div><label>${label}</label>${opts?`<select name="${key}" ${key==='customer_id'||key==='sale_id'||key==='investor_id'?'required':''}><option value="">Выбрать</option>${options(kind).map(([id,text])=>`<option value="${esc(id)}">${esc(text)}</option>`).join('')}</select>`:`<input name="${key}" type="${kind}" ${kind==='number'?'min="0" step="any"':''} ${['full_name','name','fixed_total','amount','description','due_date'].includes(key)?'required':''}>`}</div>`}).join('');$('content').innerHTML=`<h2>${sections[type]}</h2>${write?`<div class="panel"><h3 id="formTitle">Добавить запись</h3><form id="recordForm" class="two">${forms}<button id="save">Сохранить</button><button type="button" class="secondary" id="cancelEdit">Сбросить</button></form><p class="muted">Цена рассрочки фиксируется при продаже. Пени, штрафы и проценты не начисляются.</p></div>`:''}<div class="panel"><input id="search" placeholder="Поиск по записям"><div id="records"></div></div>`;const form=$('recordForm');if(form){form.onsubmit=e=>save(e,type);$('cancelEdit').onclick=()=>{form.reset();form.dataset.id='';$('formTitle').textContent='Добавить запись'}}$('search').oninput=()=>rows(type,write);rows(type,write)}
+function rows(type,write){const q=$('search').value.toLowerCase(),items=(data[type]||[]).filter(r=>JSON.stringify(r).toLowerCase().includes(q));$('records').innerHTML=items.length?items.slice().reverse().map(r=>`<div class="item"><div><b>${esc(r.full_name||r.name||r.description||r.due_date||r.paid_at?.slice(0,10)||r.occurred_at||r.sold_at||'Запись')}</b></div><div class="muted">${fields[type].map(([k,label,kind])=>`${label}: ${esc(kind==='customers'?nameOf('customers',r[k]):kind==='investors'?nameOf('investors',r[k]):kind==='products'?nameOf('products',r[k]):kind==='sales'?nameOf('customers',(data.sales||[]).find(s=>s.id===r[k])?.customer_id):r[k])}`).join(' · ')}</div>${write?`<button class="secondary" data-edit="${r.id}">Изменить</button>`:''}</div>`).join(''):'<div class="empty">Записей пока нет</div>';$('records').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const r=(data[type]||[]).find(x=>x.id===b.dataset.edit),form=$('recordForm');form.dataset.id=r.id;fields[type].forEach(([k,,kind])=>{if(form.elements[k])form.elements[k].value=kind==='datetime-local'?(r[k]||'').slice(0,16):r[k]??''});$('formTitle').textContent='Изменить запись';form.scrollIntoView({behavior:'smooth'})})}
+async function save(e,type){e.preventDefault();const form=e.target,record={};for(const [k,,kind] of fields[type]){let v=form.elements[k].value;if(!v&&['notes','phone','address','sku','customer_id','product_id'].includes(k))v=null;if(kind==='number')v=Number(v||0);if(kind==='datetime-local'&&v)v=new Date(v).toISOString();record[k]=v}if(type==='sales'){if(num(record.initial_payment)>num(record.fixed_total))return msg('Первый взнос не может превышать цену',true);if(record.sale_type==='cash'&&num(record.initial_payment)!==num(record.fixed_total))return msg('Для продажи за наличные оплата должна равняться цене',true)}if(type==='payments'){const s=(data.sales||[]).find(s=>s.id===record.sale_id);if(s&&num(record.amount)>remaining(s)+(form.dataset.id?num((data.payments||[]).find(x=>x.id===form.dataset.id)?.amount):0))return msg('Платёж превышает остаток долга',true)}const btn=$('save');btn.disabled=true;try{const id=form.dataset.id;const query=id?sb.from(type).update(record).eq('id',id):sb.from(type).insert(record);const {error}=await query;if(error)throw error;msg('Запись сохранена');await load();msg('Запись сохранена')}catch(err){msg('Не удалось сохранить: '+err.message,true)}finally{btn.disabled=false}}
+function reports(){const m=month(),payments=sum((data.payments||[]).filter(x=>x.paid_at?.startsWith(m)),'amount'),down=sum((data.sales||[]).filter(x=>x.sold_at?.startsWith(m)),'initial_payment'),expense=sum((data.expenses||[]).filter(x=>x.spent_at?.startsWith(m)),'amount'),sold=sum((data.sales||[]).filter(x=>x.sold_at?.startsWith(m)),'fixed_total');$('content').innerHTML=`<h2>Отчёт за ${m}</h2><div class="tiles">${[['Продажи по договорам',sold],['Получено от покупателей',payments+down],['Расходы',expense],['Денежный поток от покупателей минус расходы',payments+down-expense]].map(x=>`<div class="tile"><div class="muted">${x[0]}</div><strong>${fmt(x[1])}</strong></div>`).join('')}</div><div class="panel"><p class="muted">Денежный поток не равен чистой прибыли. Для расчёта прибыли нужны себестоимость проданных товаров, закупки, возвраты и распределение средств инвесторов.</p></div>`}
+$('login').onsubmit=async e=>{e.preventDefault();clearMsg();const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)msg('Ошибка входа: '+error.message,true)};$('logout').onclick=()=>sb.auth.signOut();$('refresh').onclick=load;
+async function updateAuth(){const {data:{session:s}}=await sb.auth.getSession();session=s;$('auth').classList.toggle('hide',!!s);$('app').classList.toggle('hide',!s);$('logout').classList.toggle('hide',!s);if(!s){data={};return}const {data:staff,error}=await sb.from('staff').select('role,full_name,active').eq('user_id',s.user.id).maybeSingle();if(error||!staff||!staff.active){$('app').classList.add('hide');msg('Нет доступа: администратор должен добавить пользователя в таблицу staff.',true);return}role=staff.role;$('who').textContent=(staff.full_name||s.user.email)+' · '+({owner:'Владелец',manager:'Менеджер',cashier:'Кассир'}[role]||role);await load()}
+sb.auth.onAuthStateChange(()=>setTimeout(updateAuth,0));updateAuth();
+</script></body></html>
