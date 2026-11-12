@@ -4,7 +4,7 @@
 <header><div><h1>Sayf.finance</h1><small>Торговля • исламская рассрочка</small></div><button id="logout" class="hide">Выйти</button></header>
 <main><div id="message"></div><section id="auth" class="panel"><h2>Вход для сотрудников</h2><form id="login"><label>Email</label><input id="email" type="email" required autocomplete="username"><label>Пароль</label><input id="password" type="password" required autocomplete="current-password"><button>Войти</button></form><p class="muted">Учётные записи создаются администратором в Supabase. Публичная регистрация отключена в интерфейсе.</p></section>
 <section id="app" class="hide"><div class="row"><span id="who" class="muted"></span><button class="secondary" id="refresh">Обновить</button></div><nav id="tabs"></nav><section id="dashboard"><div class="tiles" id="tiles"></div><div class="panel"><h2>Платежи с просрочкой</h2><div id="overdue"></div></div><div class="panel"><h2>Предстоящие платежи (30 дней)</h2><div id="upcoming"></div></div></section><section id="content" class="hide"></section></section></main>
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 const URL='https://dbbpsrsmxmtsixdxcuns.supabase.co',KEY='sb_publishable_tYl-KDB37gCB2QBwlBIyBA_E3Zo-3nh';
 const sb=window.supabase.createClient(URL,KEY);const $=id=>document.getElementById(id);let session=null,role='',data={},tab='dashboard';
 const sections={dashboard:'Главная',customers:'Покупатели',products:'Товары',sales:'Продажи',installments:'График',payments:'Платежи',investors:'Инвесторы',investor_transactions:'Вложения',expenses:'Расходы',reports:'Отчёт'};
